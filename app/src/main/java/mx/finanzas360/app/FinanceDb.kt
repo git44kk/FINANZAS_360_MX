@@ -14,9 +14,12 @@ class FinanceDb(context: Context) :
 
     override fun onConfigure(db: SQLiteDatabase) {
         super.onConfigure(db)
+        // Configure foreign keys through the database API.
+        // Do NOT invoke execSQL() on PRAGMAs that may return rows: SQLCipher's
+        // non-query executor throws SQLiteException (code 0) in that case.
+        // The database remains encrypted by SQLCipher; these two optional
+        // PRAGMA calls are deliberately omitted during startup.
         db.setForeignKeyConstraintsEnabled(true)
-        db.execSQL("PRAGMA cipher_memory_security = ON")
-        db.execSQL("PRAGMA secure_delete = ON")
     }
 
     override fun onCreate(db: SQLiteDatabase) {
